@@ -18,20 +18,40 @@
     </properties>
 
     <dependencies>
-        <!-- CloudSim dependency -->
+        <!-- Local CloudSim dependency from libs folder -->
         <dependency>
             <groupId>org.cloudbus.cloudsim</groupId>
             <artifactId>cloudsim</artifactId>
             <version>3.0.3</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/cloudsim-3.0.3.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>org.cloudbus.cloudsim</groupId>
+            <artifactId>cloudsim</artifactId>
+            <version>3.0.3</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/cloudsim-3.0.3-sources.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>org.cloudbus.cloudsim</groupId>
+            <artifactId>cloudsim</artifactId>
+            <version>3.0.3</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/cloudsim-examples-3.0.3-sources.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>org.cloudbus.cloudsim</groupId>
+            <artifactId>cloudsim</artifactId>
+            <version>3.0.3</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/cloudsim-examples-3.0.3.jar</systemPath>
         </dependency>
         
-        <!-- JUnit for testing -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.13.2</version>
-            <scope>test</scope>
-        </dependency>
+        <!-- Add any other local dependencies here with the same pattern -->
     </dependencies>
 
     <build>
@@ -47,47 +67,27 @@
                 </configuration>
             </plugin>
             
-            <!-- Assembly plugin to create a jar with dependencies -->
+            <!-- Include dependencies in the final JAR -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.3.0</version>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>SchedulingAlgorithmComparison</mainClass>
-                        </manifest>
-                    </archive>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                </configuration>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.4</version>
                 <executions>
                     <execution>
-                        <id>make-assembly</id>
                         <phase>package</phase>
                         <goals>
-                            <goal>single</goal>
+                            <goal>shade</goal>
                         </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>SchedulingAlgorithmComparison</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
-            
-            <!-- Maven Surefire Plugin for running tests -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.22.2</version>
-            </plugin>
         </plugins>
     </build>
-    
-    <repositories>
-        <!-- CloudSim repository -->
-        <repository>
-            <id>central</id>
-            <name>Central Repository</name>
-            <url>https://repo.maven.apache.org/maven2</url>
-        </repository>
-    </repositories>
 </project>

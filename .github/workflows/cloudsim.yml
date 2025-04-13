@@ -30,6 +30,13 @@ jobs:
         distribution: 'adopt'
         cache: maven
     
+    - name: Check for libs directory
+      run: |
+        if [ ! -d "./libs" ]; then
+          echo "::error::The libs directory containing CloudSim JAR files is missing. Please make sure to commit the libs directory with your CloudSim dependencies."
+          exit 1
+        fi
+    
     - name: Build with Maven
       run: mvn -B package --file pom.xml
     
@@ -38,12 +45,12 @@ jobs:
         CLOUDLET_COUNT="${{ github.event.inputs.cloudlet-count || '8' }}"
         VM_COUNT="${{ github.event.inputs.vm-count || '4' }}"
         
-        java -cp target/cloudsim-scheduling-comparison-1.0-SNAPSHOT-jar-with-dependencies.jar SchedulingAlgorithmComparison $VM_COUNT $CLOUDLET_COUNT
+        java -jar target/cloudsim-scheduling-comparison-1.0-SNAPSHOT.jar $VM_COUNT $CLOUDLET_COUNT
       
     - name: Save simulation results
       run: |
         mkdir -p simulation-results
-        java -cp target/cloudsim-scheduling-comparison-1.0-SNAPSHOT-jar-with-dependencies.jar SchedulingAlgorithmComparison ${{ github.event.inputs.cloudlet-count || '8' }} ${{ github.event.inputs.vm-count || '4' }} > simulation-results/results.txt
+        java -jar target/cloudsim-scheduling-comparison-1.0-SNAPSHOT.jar ${{ github.event.inputs.cloudlet-count || '8' }} ${{ github.event.inputs.vm-count || '4' }} > simulation-results/results.txt
       
     - name: Upload simulation results
       uses: actions/upload-artifact@v3
