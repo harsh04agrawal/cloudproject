@@ -27,7 +27,7 @@ jobs:
 
     - name: Run simulation
       run: |
-        java -cp "target/classes:libs/*" cloudproject
+        java -cp "target/classes:libs/cloudsim-3.0.3.jar:libs/cloudsim-examples-3.0.3.jar" cloudproject
 
     - name: Save output
       run: |
