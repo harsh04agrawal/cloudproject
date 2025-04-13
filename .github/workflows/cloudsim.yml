@@ -36,25 +36,14 @@ jobs:
         echo "Classes in cloudsim-3.0.3.jar:"
         jar tf libs/cloudsim-3.0.3.jar | grep CloudSim || echo "CloudSim class not found!"
 
-    - name: Compile Java source
+    - name: Compile Java code
       run: |
         mkdir -p target/classes
         javac -cp "libs/*" -d target/classes src/main/java/cloudproject.java
 
-    - name: Show compiled classes
+    - name: Run simulation
       run: |
-        echo "Compiled class files:"
-        find target/classes -name "*.class"
-
-    - name: Print full classpath
-      run: |
-        echo "Full runtime classpath:"
-        echo "target/classes:$(echo libs/*.jar | tr ' ' ':')"
-
-    - name: Run simulation with full classpath
-      run: |
-        CLASSPATH="target/classes:$(echo libs/*.jar | tr ' ' ':')"
-        echo "Using classpath: $CLASSPATH"
+        java -cp "target/classes:libs/*" cloudproject
         java -cp "$CLASSPATH" cloudproject
 
     - name: Save output to file
