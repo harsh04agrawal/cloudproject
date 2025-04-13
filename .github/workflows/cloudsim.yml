@@ -19,21 +19,22 @@ jobs:
       with:
         java-version: '8'
         distribution: 'adopt'
-    
-    - name: Compile Java program
+
+    - name: Install CloudSim JAR to local Maven repo
       run: |
-        mkdir -p target/classes
-        javac -cp "./libs/*" -d target/classes src/main/java/cloudproject.java
-    
-    - name: Run CloudSim simulation
-      run: |
-        java -cp "target/classes:./libs/*" cloudproject
-    
+        mvn install:install-file -Dfile=libs/cloudsim-3.0.3.jar -DgroupId=org.cloudbus.cloudsim -DartifactId=cloudsim -Dversion=3.0.3 -Dpackaging=jar
+
+    - name: Build project with Maven
+      run: mvn clean package
+
+    - name: Run simulation
+      run: java -cp target/cloudsim-scheduling-comparison-1.0-SNAPSHOT.jar SchedulingAlgorithmComparison
+
     - name: Save output
       run: |
         mkdir -p simulation-results
-        java -cp "target/classes:./libs/*" SchedulingAlgorithmComparison > simulation-results/results.txt
-    
+        java -cp target/cloudsim-scheduling-comparison-1.0-SNAPSHOT.jar SchedulingAlgorithmComparison > simulation-results/results.txt
+
     - name: Upload results
       uses: actions/upload-artifact@v4
       with:
