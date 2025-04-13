@@ -1,4 +1,4 @@
-name: CloudSim Scheduling Comparison
+name: CloudSim Scheduling Comparison (No Maven)
 
 on:
   push:
@@ -13,27 +13,26 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    
+
     - name: Set up JDK 8
       uses: actions/setup-java@v3
       with:
         java-version: '8'
         distribution: 'adopt'
 
-    - name: Install CloudSim JAR to local Maven repo
+    - name: Compile Java code
       run: |
-        mvn install:install-file -Dfile=libs/cloudsim-3.0.3.jar -DgroupId=org.cloudbus.cloudsim -DartifactId=cloudsim -Dversion=3.0.3 -Dpackaging=jar
-
-    - name: Build project with Maven
-      run: mvn clean package
+        mkdir -p target/classes
+        javac -cp "libs/*" -d target/classes src/main/java/cloudproject.java
 
     - name: Run simulation
-      run: java -cp target/cloudsim-scheduling-comparison-1.0-SNAPSHOT.jar SchedulingAlgorithmComparison
+      run: |
+        java -cp "target/classes:libs/*" cloudproject
 
     - name: Save output
       run: |
         mkdir -p simulation-results
-        java -cp target/cloudsim-scheduling-comparison-1.0-SNAPSHOT.jar SchedulingAlgorithmComparison > simulation-results/results.txt
+        java -cp "target/classes:libs/*" cloudproject > simulation-results/results.txt
 
     - name: Upload results
       uses: actions/upload-artifact@v4
