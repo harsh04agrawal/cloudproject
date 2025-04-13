@@ -23,8 +23,8 @@ jobs:
       - name: Compile AWS_Lambda_Simulation.java with JAR dependencies
         run: |
           mkdir -p out
-          javac -cp "lib/*" -d out src/cloudsim/simulations/cloudproject.java
+          javac -cp "lib/*" -d out src/main/java/cloudproject.java
 
       - name: Run AWS_Lambda_Simulation
         run: |
-          java -cp "out:lib/*" cloudsim.simulations.cloudproject
+          java -cp "out:lib/*" main.java.cloudproject
