@@ -1,0 +1,69 @@
+name: CloudSim Scheduling Algorithm Comparison
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+    inputs:
+      cloudlet-count:
+        description: 'Number of cloudlets to simulate'
+        required: true
+        default: '8'
+      vm-count:
+        description: 'Number of VMs to use'
+        required: true
+        default: '4'
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up JDK 8
+      uses: actions/setup-java@v3
+      with:
+        java-version: '8'
+        distribution: 'adopt'
+        cache: maven
+    
+    - name: Build with Maven
+      run: mvn -B package --file pom.xml
+    
+    - name: Run CloudSim simulation
+      run: |
+        CLOUDLET_COUNT="${{ github.event.inputs.cloudlet-count || '8' }}"
+        VM_COUNT="${{ github.event.inputs.vm-count || '4' }}"
+        
+        java -cp target/cloudsim-scheduling-comparison-1.0-SNAPSHOT-jar-with-dependencies.jar SchedulingAlgorithmComparison $VM_COUNT $CLOUDLET_COUNT
+      
+    - name: Save simulation results
+      run: |
+        mkdir -p simulation-results
+        java -cp target/cloudsim-scheduling-comparison-1.0-SNAPSHOT-jar-with-dependencies.jar SchedulingAlgorithmComparison ${{ github.event.inputs.cloudlet-count || '8' }} ${{ github.event.inputs.vm-count || '4' }} > simulation-results/results.txt
+      
+    - name: Upload simulation results
+      uses: actions/upload-artifact@v3
+      with:
+        name: simulation-results
+        path: simulation-results/
+        
+    - name: Generate comparison report
+      run: |
+        echo "# CloudSim Scheduling Comparison Results" > report.md
+        echo "## Configuration" >> report.md
+        echo "- VMs: ${{ github.event.inputs.vm-count || '4' }}" >> report.md
+        echo "- Cloudlets: ${{ github.event.inputs.cloudlet-count || '8' }}" >> report.md
+        echo "## Raw Results" >> report.md
+        echo '```' >> report.md
+        cat simulation-results/results.txt >> report.md
+        echo '```' >> report.md
+        
+    - name: Upload comparison report
+      uses: actions/upload-artifact@v3
+      with:
+        name: comparison-report
+        path: report.md
