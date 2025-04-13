@@ -47,7 +47,7 @@ public class cloudproject {
     private static final int HOST_PES = 4;
     private static final int NUM_VMS = 4;
     private static final int VM_PES = 2;
-    private static final int NUM_CLOUDLETS = 8;
+    private static final int NUM_CLOUDLETS = 10;
     private static final int CLOUDLET_PES = 1;
     private static final int CLOUDLET_LENGTH = 10000;
 
