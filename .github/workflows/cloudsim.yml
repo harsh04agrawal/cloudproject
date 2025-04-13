@@ -53,7 +53,7 @@ jobs:
         java -jar target/cloudsim-scheduling-comparison-1.0-SNAPSHOT.jar ${{ github.event.inputs.cloudlet-count || '8' }} ${{ github.event.inputs.vm-count || '4' }} > simulation-results/results.txt
       
     - name: Upload simulation results
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: simulation-results
         path: simulation-results/
@@ -70,7 +70,7 @@ jobs:
         echo '```' >> report.md
         
     - name: Upload comparison report
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: comparison-report
         path: report.md
