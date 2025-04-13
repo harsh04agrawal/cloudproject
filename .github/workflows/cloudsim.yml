@@ -23,11 +23,11 @@ jobs:
     - name: Compile Java program
       run: |
         mkdir -p target/classes
-        javac -cp "./libs/*" -d target/classes src/main/java/SchedulingAlgorithmComparison.java
+        javac -cp "./libs/*" -d target/classes src/main/java/cloudproject.java
     
     - name: Run CloudSim simulation
       run: |
-        java -cp "target/classes:./libs/*" SchedulingAlgorithmComparison
+        java -cp "target/classes:./libs/*" cloudproject
     
     - name: Save output
       run: |
