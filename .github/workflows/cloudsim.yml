@@ -1,4 +1,4 @@
-name: CloudSim Scheduling Algorithm Comparison
+name: CloudSim Scheduling Comparison
 
 on:
   push:
@@ -6,18 +6,9 @@ on:
   pull_request:
     branches: [ main, master ]
   workflow_dispatch:
-    inputs:
-      cloudlet-count:
-        description: 'Number of cloudlets to simulate'
-        required: true
-        default: '8'
-      vm-count:
-        description: 'Number of VMs to use'
-        required: true
-        default: '4'
 
 jobs:
-  build-and-test:
+  run-simulation:
     runs-on: ubuntu-latest
 
     steps:
@@ -28,49 +19,23 @@ jobs:
       with:
         java-version: '8'
         distribution: 'adopt'
-        cache: maven
     
-    - name: Check for libs directory
+    - name: Compile Java program
       run: |
-        if [ ! -d "./libs" ]; then
-          echo "::error::The libs directory containing CloudSim JAR files is missing. Please make sure to commit the libs directory with your CloudSim dependencies."
-          exit 1
-        fi
-    
-    - name: Build with Maven
-      run: mvn -B package --file pom.xml
+        mkdir -p target/classes
+        javac -cp "./libs/*" -d target/classes src/main/java/SchedulingAlgorithmComparison.java
     
     - name: Run CloudSim simulation
       run: |
-        CLOUDLET_COUNT="${{ github.event.inputs.cloudlet-count || '8' }}"
-        VM_COUNT="${{ github.event.inputs.vm-count || '4' }}"
-        
-        java -jar target/cloudsim-scheduling-comparison-1.0-SNAPSHOT.jar $VM_COUNT $CLOUDLET_COUNT
-      
-    - name: Save simulation results
+        java -cp "target/classes:./libs/*" SchedulingAlgorithmComparison
+    
+    - name: Save output
       run: |
         mkdir -p simulation-results
-        java -jar target/cloudsim-scheduling-comparison-1.0-SNAPSHOT.jar ${{ github.event.inputs.cloudlet-count || '8' }} ${{ github.event.inputs.vm-count || '4' }} > simulation-results/results.txt
-      
-    - name: Upload simulation results
+        java -cp "target/classes:./libs/*" SchedulingAlgorithmComparison > simulation-results/results.txt
+    
+    - name: Upload results
       uses: actions/upload-artifact@v4
       with:
         name: simulation-results
-        path: simulation-results/
-        
-    - name: Generate comparison report
-      run: |
-        echo "# CloudSim Scheduling Comparison Results" > report.md
-        echo "## Configuration" >> report.md
-        echo "- VMs: ${{ github.event.inputs.vm-count || '4' }}" >> report.md
-        echo "- Cloudlets: ${{ github.event.inputs.cloudlet-count || '8' }}" >> report.md
-        echo "## Raw Results" >> report.md
-        echo '```' >> report.md
-        cat simulation-results/results.txt >> report.md
-        echo '```' >> report.md
-        
-    - name: Upload comparison report
-      uses: actions/upload-artifact@v4
-      with:
-        name: comparison-report
-        path: report.md
+        path: simulation-results/results.txt
