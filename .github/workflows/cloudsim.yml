@@ -1,4 +1,4 @@
-name: CloudSim Scheduling Comparison (No Maven)
+name: CloudSim Scheduling Comparison (Debug Mode)
 
 on:
   push:
@@ -12,7 +12,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout Repository
+      uses: actions/checkout@v3
 
     - name: Set up JDK 8
       uses: actions/setup-java@v3
@@ -20,19 +21,47 @@ jobs:
         java-version: '8'
         distribution: 'temurin'
 
-    - name: Compile Java code
+    - name: List directory structure (top level)
+      run: |
+        echo "Project structure:"
+        ls -R
+
+    - name: List JAR files in libs
+      run: |
+        echo "JARs in libs directory:"
+        ls -lh libs/
+
+    - name: Check contents of cloudsim-3.0.3.jar
+      run: |
+        echo "Classes in cloudsim-3.0.3.jar:"
+        jar tf libs/cloudsim-3.0.3.jar | grep CloudSim || echo "CloudSim class not found!"
+
+    - name: Compile Java source
       run: |
         mkdir -p target/classes
         javac -cp "libs/*" -d target/classes src/main/java/cloudproject.java
 
-    - name: Run simulation
+    - name: Show compiled classes
       run: |
-        java -cp "target/classes:libs/cloudsim-3.0.3.jar:libs/cloudsim-examples-3.0.3.jar" cloudproject
+        echo "Compiled class files:"
+        find target/classes -name "*.class"
 
-    - name: Save output
+    - name: Print full classpath
+      run: |
+        echo "Full runtime classpath:"
+        echo "target/classes:$(echo libs/*.jar | tr ' ' ':')"
+
+    - name: Run simulation with full classpath
+      run: |
+        CLASSPATH="target/classes:$(echo libs/*.jar | tr ' ' ':')"
+        echo "Using classpath: $CLASSPATH"
+        java -cp "$CLASSPATH" cloudproject
+
+    - name: Save output to file
       run: |
         mkdir -p simulation-results
-        java -cp "target/classes:libs/*" cloudproject > simulation-results/results.txt
+        CLASSPATH="target/classes:$(echo libs/*.jar | tr ' ' ':')"
+        java -cp "$CLASSPATH" cloudproject > simulation-results/results.txt
 
     - name: Upload results
       uses: actions/upload-artifact@v4
