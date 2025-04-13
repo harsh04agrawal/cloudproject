@@ -1,93 +1,68 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" 
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.cloudbus.cloudsim</groupId>
+  <artifactId>cloud-ca3</artifactId>
+  <version>1.0-SNAPSHOT</version>
 
-    <groupId>org.cloudsim.example</groupId>
-    <artifactId>cloudsim-scheduling-comparison</artifactId>
-    <version>1.0-SNAPSHOT</version>
-    <packaging>jar</packaging>
+  <build>
+    <sourceDirectory>src/main/java</sourceDirectory>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.1</version>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
-    <name>CloudSim Scheduling Algorithm Comparison</name>
-    <description>A project to compare Time-Shared and Space-Shared scheduling algorithms using CloudSim 3.0.3</description>
+  <dependencies>
+    <dependency>
+      <groupId>cloudsim</groupId>
+      <artifactId>cloudsim</artifactId>
+      <version>3.0.3</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/lib/cloudsim-3.0.3.jar</systemPath>
+    </dependency>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-    </properties>
+    <dependency>
+      <groupId>cloudsim</groupId>
+      <artifactId>cloudsim</artifactId>
+      <version>3.0.3</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/lib/cloudsim-3.0.3-sources.jar</systemPath>
+    </dependency>
 
-    <dependencies>
-        <!-- Local CloudSim dependency from libs folder -->
-        <dependency>
-            <groupId>org.cloudbus.cloudsim</groupId>
-            <artifactId>cloudsim</artifactId>
-            <version>3.0.3</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/libs/cloudsim-3.0.3.jar</systemPath>
-        </dependency>
+    <dependency>
+      <groupId>cloudsim</groupId>
+      <artifactId>cloudsim-examples</artifactId>
+      <version>3.0.3</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/lib/cloudsim-examples-3.0.3.jar</systemPath>
+    </dependency>
 
-        <dependency>
-            <groupId>org.cloudbus.cloudsim</groupId>
-            <artifactId>cloudsim</artifactId>
-            <version>3.0.3</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/libs/cloudsim-3.0.3-sources.jar</systemPath>
-        </dependency>
+    <dependency>
+      <groupId>cloudsim</groupId>
+      <artifactId>cloudsim</artifactId>
+      <version>3.0.3</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/lib/cloudsim-examples-3.0.3-sources.jar</systemPath>
+    </dependency>
 
-        <dependency>
-            <groupId>org.cloudbus.cloudsim</groupId>
-            <artifactId>cloudsim</artifactId>
-            <version>3.0.3</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/libs/cloudsim-examples-3.0.3-sources.jar</systemPath>
-        </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-math3</artifactId>
+      <version>3.6.1</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/lib/commons-math3-3.6.1.jar</systemPath>
+    </dependency>
 
-        <dependency>
-            <groupId>org.cloudbus.cloudsim</groupId>
-            <artifactId>cloudsim</artifactId>
-            <version>3.0.3</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/libs/cloudsim-examples-3.0.3.jar</systemPath>
-        </dependency>
-        
-        <!-- Add any other local dependencies here with the same pattern -->
-    </dependencies>
-
-    <build>
-        <plugins>
-            <!-- Compiler plugin -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
-            </plugin>
-            
-            <!-- Include dependencies in the final JAR -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.4</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>SchedulingAlgorithmComparison</mainClass>
-                                </transformer>
-                            </transformers>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
+    
+  </dependencies>
 </project>
